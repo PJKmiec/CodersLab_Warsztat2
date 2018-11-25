@@ -26,7 +26,6 @@ public class User {
     }
 
     private void setPassword(String password) {
-        // tu będzie mechanizm szyfrowania
         this.password = BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
