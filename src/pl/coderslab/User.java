@@ -18,6 +18,13 @@ public class User {
     public User() {
     }
 
+    public User(String username) {
+        this.username = username;
+
+        // na potrzeby testów
+        id = 1;
+    }
+
     public User(String username, String email, String password, UserGroup userGroup) {
         this.username = username;
         this.email = email;
@@ -25,8 +32,16 @@ public class User {
         this.userGroup = userGroup;
     }
 
-    private void setPassword(String password) {
-        this.password = BCrypt.hashpw(password, BCrypt.gensalt());
+    public User(int id, String username, String email, String password, UserGroup userGroup) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        setPassword(password);
+        this.userGroup = userGroup;
+    }
+
+    public User setPassword(String password) {
+        this.password = BCrypt.hashpw(password, BCrypt.gensalt()); return this;
     }
 
     public void saveToDB(Connection conn) throws SQLException {
@@ -72,10 +87,47 @@ public class User {
         return null;
     }
 
+    static public User loadUserByName(Connection conn, String name) throws SQLException {
+        String sql = "SELECT * FROM users where username = ? limit 1";
+        PreparedStatement preparedStatement = conn.prepareStatement(sql);
+        preparedStatement.setString(1, name);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+            User loadedUser = new User();
+            loadedUser.id = resultSet.getInt("id");
+            loadedUser.username = resultSet.getString("username");
+            loadedUser.password = resultSet.getString("password");
+            loadedUser.email = resultSet.getString("email");
+            loadedUser.userGroup = UserGroup.loadUserGroupById(conn, resultSet.getInt("user_group_id"));
+            return loadedUser;
+        }
+        return null;
+    }
+
     static public User[] loadAllUsers(Connection conn) throws SQLException {
         ArrayList<User> users = new ArrayList<User>();
         String sql = "SELECT * FROM users";
         PreparedStatement preparedStatement = conn.prepareStatement(sql);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            User loadedUser = new User();
+            loadedUser.id = resultSet.getInt("id");
+            loadedUser.username = resultSet.getString("username");
+            loadedUser.password = resultSet.getString("password");
+            loadedUser.email = resultSet.getString("email");
+            loadedUser.userGroup = UserGroup.loadUserGroupById(conn, resultSet.getInt("user_group_id"));
+            users.add(loadedUser);
+        }
+        User[] uArray = new User[users.size()];
+        uArray = users.toArray(uArray);
+        return uArray;
+    }
+
+    static public User[] loadAllByGroupId(Connection conn, int id) throws SQLException {
+        ArrayList<User> users = new ArrayList<User>();
+        String sql = "SELECT * FROM users where user_group_id = ?";
+        PreparedStatement preparedStatement = conn.prepareStatement(sql);
+        preparedStatement.setInt(1, id);
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()) {
             User loadedUser = new User();
@@ -101,6 +153,8 @@ public class User {
         }
     }
 
+
+
     @Override
     public String toString() {
         return "User{" +
@@ -112,7 +166,17 @@ public class User {
                 '}';
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+
+    public int getId() {
+        return id;
     }
+    public String getUsername() { return username; }
+    public UserGroup getGroupId() {
+        return userGroup;
+    }
+
+    public User setId(int id) { this.id = id; return this; }
+    public User setEmail(String email) { this.email = email; return this; }
+    public User setUserGroup(UserGroup userGroup) { this.userGroup = userGroup; return this; }
+    public User setUsername (String username) { this.username = username; return this; }
 }

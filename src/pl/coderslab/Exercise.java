@@ -14,7 +14,20 @@ public class Exercise {
     public Exercise() {
     }
 
+    public Exercise(String title) {
+        this.title = title;
+
+        // na potrzeby testów
+        id = 1;
+    }
+
     public Exercise(String title, String description) {
+        this.title = title;
+        this.description = description;
+    }
+
+    public Exercise(int id, String title, String description) {
+        this.id = id;
         this.title = title;
         this.description = description;
     }
@@ -84,6 +97,15 @@ public class Exercise {
         }
     }
 
+    public int getId() {
+        return id;
+    }
+    public String getTitle() {
+        return title;
+    }
+    public String getDescription() {
+        return description;
+    }
 
     @Override
     public String toString() {
