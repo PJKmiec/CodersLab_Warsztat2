@@ -111,6 +111,27 @@ public class Solution {
         return eArray;
     }
 
+    static public Solution[] loadAllNotByUserId(Connection conn, int id) throws SQLException {
+        ArrayList<Solution> solutions = new ArrayList<Solution>();
+        String sql = "select * from exercise join solution on exercise.id = solution.exercise_id where solution.users_id != ?";
+        PreparedStatement preparedStatement = conn.prepareStatement(sql);
+        preparedStatement.setInt(1, id);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            Solution loadedSolution = new Solution();
+            loadedSolution.id = resultSet.getInt("id");
+            loadedSolution.created = resultSet.getString("created");
+            loadedSolution.updated = resultSet.getString("updated");
+            loadedSolution.description = resultSet.getString("description");
+            loadedSolution.exercise = Exercise.loadExerciseById(conn, resultSet.getInt("exercise_id"));
+            loadedSolution.user = User.loadUserById(conn, resultSet.getInt("users_id"));
+            solutions.add(loadedSolution);
+        }
+        Solution[] eArray = new Solution[solutions.size()];
+        eArray = solutions.toArray(eArray);
+        return eArray;
+    }
+
     static public Solution[] loadAllByExerciseId(Connection conn, int id) throws SQLException {
         ArrayList<Solution> solutions = new ArrayList<Solution>();
         String sql = "SELECT * FROM solution where exercise_id = ? order by created desc";

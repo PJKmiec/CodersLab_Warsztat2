@@ -122,7 +122,8 @@ public class Panel {
                         System.out.println("Podaj opis:");
                         String description = scanner.nextLine();
 
-                        Exercise exercise = new Exercise(id, title, description);
+                        Exercise exercise = Exercise.loadExerciseById(conn, id);
+                        exercise.setTitle(title).setDescription(description);
                         exercise.saveToDB(conn);
                         System.out.println("Zadanie zmienione:");
 
@@ -225,7 +226,7 @@ public class Panel {
                         Solution[] solutions = Solution.loadAllSolutions(conn);
 
                         for (Solution solutionElement : solutions) {
-                            System.out.println(solutionElement.getId() + " (c." + solutionElement.getCreated() + "/u." + solutionElement.getUpdated() + "): " + solutionElement.getDescription() + " [Ex." + solutionElement.getExercise().getId() + "/Us: " + solutionElement.getUser().getUsername() + "]");
+                            System.out.println(solutionElement.getId() + " (c." + solutionElement.getCreated() + "/u." + solutionElement.getUpdated() + "): " + solutionElement.getExercise().getTitle() + " [Ex." + solutionElement.getExercise().getId() + "/Us: " + solutionElement.getUser().getUsername() + "]");
                         }
 
 
@@ -237,7 +238,7 @@ public class Panel {
                         Solution[] solutions = Solution.loadAllByUserId(conn, userId);
 
                         for (Solution solutionElement : solutions) {
-                            System.out.println(solutionElement.getId() + " (c." + solutionElement.getCreated() + "/u." + solutionElement.getUpdated() + "): " + solutionElement.getDescription() + " [Ex." + solutionElement.getExercise().getId() + "/Us: " + solutionElement.getUser().getUsername() + "]");
+                            System.out.println(solutionElement.getId() + " (c." + solutionElement.getCreated() + "/u." + solutionElement.getUpdated() + "): " + solutionElement.getExercise().getTitle() + " [Ex." + solutionElement.getExercise().getId() + "/Us: " + solutionElement.getUser().getUsername() + "]");
                         }
 
                     }

@@ -21,6 +21,11 @@ public class Exercise {
         id = 1;
     }
 
+    public Exercise(int id) {
+        this.id = id;
+
+    }
+
     public Exercise(String title, String description) {
         this.title = title;
         this.description = description;
@@ -105,6 +110,21 @@ public class Exercise {
     }
     public String getDescription() {
         return description;
+    }
+
+    public Exercise setId(int id) {
+        this.id = id;
+        return this;
+    }
+
+    public Exercise setTitle(String title) {
+        this.title = title;
+        return this;
+    }
+
+    public Exercise setDescription(String description) {
+        this.description = description;
+        return this;
     }
 
     @Override

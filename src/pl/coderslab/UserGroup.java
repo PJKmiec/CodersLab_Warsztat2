@@ -108,7 +108,7 @@ public class UserGroup {
         return id;
     }
 
-    public void setName(String name) { this.name = name; }
+    public UserGroup setName(String name) { this.name = name; return this; }
 
     public String getName() {
         return name;
